@@ -7,6 +7,7 @@ public enum Rating {
     MATURE("Mature", 16);
 
     private String displayName;
+    private int age;
 
     Rating(String displayName, int minimumAge) {
         this.displayName = displayName;
@@ -14,5 +15,9 @@ public enum Rating {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public int getAge() {
+        return age;
     }
 }
