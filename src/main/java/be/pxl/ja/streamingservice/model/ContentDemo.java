@@ -11,7 +11,7 @@ public class ContentDemo {
         List<Content> contentList = new ArrayList<>();
 
         Movie the_incredibles = new Movie("The Incredibles", Rating.LITTLE_KIDS);
-        the_incredibles.setReleasedate(LocalDate.of(2004, 10, 27));
+        the_incredibles.setReleaseDate(LocalDate.of(2004, 10, 27));
         contentList.add(the_incredibles);
 
         Movie iron_fist = new Movie("Iron Fist", Rating.MATURE);

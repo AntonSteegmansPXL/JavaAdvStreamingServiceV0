@@ -5,7 +5,7 @@ public class Documentary extends Movie {
 
     public Documentary(String title, Rating maturityRating) {
         super(title, maturityRating);
-        this.setGenre(Genre.DOCUMENTARY);
+        setGenre(Genre.DOCUMENTARY);
     }
 
     public String getTopic() {
@@ -18,11 +18,16 @@ public class Documentary extends Movie {
 
     @Override
     public void play() {
-        System.out.println("Playing movie about " + this.topic);
+        StringBuilder result = new StringBuilder();
+        result.append("Playing documentary ").append(this);
+        if (topic != null) {
+            result.append(" on ").append(topic);
+        }
+        System.out.println(result.toString());
     }
 
     @Override
     public void pause() {
-        System.out.println("Paused movie about " + this.topic);
+        System.out.println("Pausing documentary " + this);
     }
 }

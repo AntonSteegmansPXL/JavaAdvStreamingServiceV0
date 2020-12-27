@@ -11,7 +11,7 @@ public abstract class Content {
     }
 
     public Rating getMaturityRating() {
-        return this.maturityRating;
+        return maturityRating;
     }
 
     public String getTitle() {

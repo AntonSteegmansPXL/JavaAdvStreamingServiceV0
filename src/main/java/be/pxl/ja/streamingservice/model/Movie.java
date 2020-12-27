@@ -2,9 +2,9 @@ package be.pxl.ja.streamingservice.model;
 
 import java.time.LocalDate;
 
-public class Movie extends Content implements Playable{
-    private String title;
-    private Rating maturityRating;
+public class Movie extends Content implements Playable {
+
+    public static final int LONG_PLAYING_TIME = 2 * 60 + 15;
 
     private String director;
     private LocalDate releasedate;
@@ -15,25 +15,19 @@ public class Movie extends Content implements Playable{
         super(title, maturityRating);
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDirector() {
         return director;
     }
 
-    public void setDirector(String director) { this.director = director; }
+    public void setDirector(String director) {
+        this.director = director;
+    }
 
     public LocalDate getReleasedate() {
         return releasedate;
     }
 
-    public void setReleasedate(LocalDate releasedate) {
+    public void setReleaseDate(LocalDate releasedate) {
         this.releasedate = releasedate;
     }
 
@@ -43,36 +37,50 @@ public class Movie extends Content implements Playable{
 
     @Override
     public void play() {
-        System.out.println("Playing: " + this);
+        System.out.println("Playing " + this);
     }
 
     @Override
     public void pause() {
-        System.out.println("Paused: " + this);
+        System.out.println("Pausing " + this);
     }
 
     public void setDuration(int duration) {
-        this.duration = duration;
+        this.duration = Math.abs(duration);
     }
 
-    public Rating getMaturityRating() {
-        return maturityRating;
+    public boolean isLongPlayingTime() {
+        return duration > LONG_PLAYING_TIME;
     }
 
-    public void setMaturityRating(Rating maturityRating) {
-        this.maturityRating = maturityRating;
-    }
-
-    public Genre getGenre() {
-        return genre;
+    public String getPlayingTime() {
+        int hours = duration / 60;
+        int minutes = duration % 60;
+        StringBuilder result = new StringBuilder();
+        if (hours > 0) {
+            result.append(hours).append(" u ");
+        }
+        if (minutes > 0) {
+            result.append(minutes).append(" min ");
+        }
+        return result.toString().trim();
     }
 
     public void setGenre(Genre genre) {
         this.genre = genre;
     }
 
+    public Genre getGenre() {
+        return genre;
+    }
+
     @Override
     public String toString() {
-        return title;
+        StringBuilder builder = new StringBuilder(super.toString());
+        if (releasedate != null) {
+            builder.append(" (").append(releasedate.getYear()).append(")");
+        }
+
+        return builder.toString();
     }
 }

@@ -1,23 +1,22 @@
 package be.pxl.ja.streamingservice.model;
 
 public enum Rating {
-    LITTLE_KIDS("Little kids", 0),
-    OLDER_KIDS("Older kids", 7),
-    TEENS("Teens", 12),
-    MATURE("Mature", 16);
+    LITTLE_KIDS(0),
+    OLDER_KIDS(7),
+    TEENS(12),
+    MATURE(16);
 
-    private String displayName;
-    private int age;
+    private int minimumAge = 0;
 
-    Rating(String displayName, int minimumAge) {
-        this.displayName = displayName;
+    Rating(int minimumAge) {
+        this.minimumAge = minimumAge;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    Rating() {
+        this(0);
     }
 
-    public int getAge() {
-        return age;
+    public int getMinimumAgeAge() {
+        return minimumAge;
     }
 }

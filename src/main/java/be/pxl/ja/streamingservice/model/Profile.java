@@ -11,7 +11,7 @@ public class Profile {
         if (getAge() == 0) {
             return false;
         } else {
-            return content.getMaturityRating().getAge() <= getAge();
+            return content.getMaturityRating().getMinimumAgeAge() <= getAge();
         }
 
     }
