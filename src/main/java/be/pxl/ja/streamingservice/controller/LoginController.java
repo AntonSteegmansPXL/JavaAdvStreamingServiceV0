@@ -1,8 +1,10 @@
 package be.pxl.ja.streamingservice.controller;
 
-import be.pxl.ja.streamingservice.model.Account;
 import be.pxl.ja.streamingservice.StreamingService;
 import be.pxl.ja.streamingservice.StreamingServiceFactory;
+import be.pxl.ja.streamingservice.exception.AccountNotFoundException;
+import be.pxl.ja.streamingservice.exception.InvalidPasswordException;
+import be.pxl.ja.streamingservice.model.Account;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,11 +52,11 @@ public class LoginController  implements Initializable {
 			Account account = logIn();
 			if (account != null) {
 				try {
-					URL resource = getClass().getClassLoader().getResource(Pages.MAIN_PAGE);
+					URL resource = getClass().getClassLoader().getResource(Pages.WHO_IS_WATCHING);
 					FXMLLoader loader = new FXMLLoader(resource);
 					Stage stage = (Stage) signInButton.getScene().getWindow();
 					Scene scene = new Scene(loader.load());
-					MainController controller = loader.getController();
+					WhoIsWatchingController controller = loader.getController();
 					controller.setAccount(account);
 					stage.setScene(scene);
 
@@ -72,8 +74,10 @@ public class LoginController  implements Initializable {
 		if(email.isEmpty() || password.isEmpty()) {
 			showError(Color.TOMATO, "Empty credentials");
 		} else {
-			Account account =  streamingService.verifyAndGetAccount(email, password);
-			if (account == null) {
+			Account account = null;
+			try {
+				account = streamingService.verifyAndGetAccount(email, password);
+			} catch (AccountNotFoundException | InvalidPasswordException e) {
 				showError(Color.TOMATO, "Wrong credentials.");
 			}
 			return account;

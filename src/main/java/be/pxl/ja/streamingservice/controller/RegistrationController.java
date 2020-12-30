@@ -2,10 +2,7 @@ package be.pxl.ja.streamingservice.controller;
 
 import be.pxl.ja.streamingservice.StreamingService;
 import be.pxl.ja.streamingservice.StreamingServiceFactory;
-import be.pxl.ja.streamingservice.model.Account;
-import be.pxl.ja.streamingservice.model.CreditCardType;
-import be.pxl.ja.streamingservice.model.PaymentInfo;
-import be.pxl.ja.streamingservice.model.StreamingPlan;
+import be.pxl.ja.streamingservice.model.*;
 import be.pxl.ja.streamingservice.util.PasswordUtil;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -84,9 +81,14 @@ public class RegistrationController implements Initializable {
 	}
 
 	public void onContinue(ActionEvent actionEvent) {
-		newAccount = new Account(emailTextField.getText(), passwordTextField.getText());
-		newAccount.setStreamingPlan(streamingPlanComboBox.getValue());
 		try {
+			String email = emailTextField.getText();
+			newAccount = new Account(email, passwordTextField.getText());
+			StreamingPlan streamingPlan = streamingPlanComboBox.getValue();
+			if (streamingPlan != null) {
+				newAccount.setStreamingPlan(streamingPlan);
+			}
+			streamingService.addAccount(newAccount);
 			URL resource = getClass().getClassLoader().getResource(Pages.REGISTRATION_STEP2);
 			FXMLLoader loader = new FXMLLoader(resource);
 			Stage stage = (Stage) continueButton.getScene().getWindow();
@@ -96,6 +98,8 @@ public class RegistrationController implements Initializable {
 			stage.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (IllegalArgumentException | DuplicateEmailException e) {
+			ErrorHandler.showError(e);
 		}
 	}
 
@@ -105,16 +109,17 @@ public class RegistrationController implements Initializable {
 	}
 
 	public void onRegister(ActionEvent actionEvent) {
-		PaymentInfo paymentInfo = new PaymentInfo();
-		paymentInfo.setCardNumber(cardnumberTextField.getText());
-		paymentInfo.setExpirationDate(expirationDatePicker.getValue());
-		paymentInfo.setFirstName(firstnameTextField.getText());
-		paymentInfo.setLastName(lastnameTextField.getText());
-		paymentInfo.setSecurityCode(Integer.parseInt(cvcTextField.getText()));
-		paymentInfo.setType(creditCardTypeComboBox.getValue());
-		newAccount.setPaymentInfo(paymentInfo);
-		streamingService.addAccount(newAccount);
 		try {
+			PaymentInfo paymentInfo = new PaymentInfo();
+			CreditCardNumber cardNumber = new CreditCardNumber(cardnumberTextField.getText(), cvcTextField.getText());
+			if (cardNumber.getCreditCardType(cardNumber.getNumber()) != creditCardTypeComboBox.getValue()) {
+				throw new IllegalArgumentException("Wrong credit card type.");
+			}
+			paymentInfo.setCardNumber(cardNumber);
+			paymentInfo.setExpirationDate(expirationDatePicker.getValue());
+			paymentInfo.setFirstName(firstnameTextField.getText());
+			paymentInfo.setLastName(lastnameTextField.getText());
+			newAccount.setPaymentInfo(paymentInfo);
 			URL resource = getClass().getClassLoader().getResource(Pages.LOGIN_PAGE);
 			Parent root = FXMLLoader.load(resource);
 			Stage stage = (Stage) registerButton.getScene().getWindow();
@@ -122,6 +127,8 @@ public class RegistrationController implements Initializable {
 			stage.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			ErrorHandler.showError(e);
 		}
 	}
 }
