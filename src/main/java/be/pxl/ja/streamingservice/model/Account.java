@@ -67,6 +67,7 @@ public class Account {
             this.password = PasswordUtil.encodePassword(password);
         } else {
             throw new IllegalArgumentException("Passwoord is niet sterk genoeg");
+
         }
     }
 
